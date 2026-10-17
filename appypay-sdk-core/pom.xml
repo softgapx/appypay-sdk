@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.softgapx</groupId>
+    <artifactId>appypay-sdk-core</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>AppyPay SDK - Core</name>
+    <description>
+        Cliente Java puro (zero dependências de framework) para a API de
+        Pagamentos da AppyPay. Sem Spring, sem JPA, sem servidor web —
+        pode ser usado em qualquer aplicação Java 21+.
+    </description>
+    <url>https://github.com/softgapx/appypay-sdk</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Bruno Ramos Juca Samuel</name>
+            <email>bruno.samuel@softgapx.com</email>
+            <organization>SoftGapX</organization>
+            <organizationUrl>https://softgapx.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/softgapx/appypay-sdk.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/softgapx/appypay-sdk.git</developerConnection>
+        <url>https://github.com/softgapx/appypay-sdk</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <jackson.version>2.18.2</jackson.version>
+        <slf4j.version>2.0.16</slf4j.version>
+
+        <junit.version>5.11.3</junit.version>
+        <mockito.version>5.14.2</mockito.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- Serialização JSON dos payloads da AppyPay. Não é Spring, é uma
+             dependência neutra e amplamente usada em SDKs de terceiros. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- Fachada de logging, não uma implementação — o consumidor escolhe
+             (Logback, Log4j2, JUL...). Também não é específico do Spring. -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- Testes -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+            </plugin>
+
+            <!-- Gera o -sources.jar, obrigatório pelo Central. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Gera o -javadoc.jar, obrigatório pelo Central. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.10.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!--
+            Assinatura GPG e publicação no Central Portal só acontecem
+            quando este profile é ativado explicitamente:
+
+                mvn clean deploy -P release
+
+            Um `mvn install`/`mvn test` do dia a dia NÃO assina nada
+            nem tenta publicar — evita exigir a passphrase GPG (e
+            evitar deploys acidentais) em builds locais normais.
+        -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+
+                    <!-- Assina jar, sources.jar e javadoc.jar com GPG. -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.7</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Empacota tudo (jar + sources + javadoc + .asc) e
+                         envia para o Sonatype Central Portal. -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                        </configuration>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

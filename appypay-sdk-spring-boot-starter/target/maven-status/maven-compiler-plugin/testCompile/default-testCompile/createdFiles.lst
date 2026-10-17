@@ -1,0 +1,3 @@
+com\softgapx\appypay\spring\AppyPayAutoConfigurationTest.class
+com\softgapx\appypay\spring\AppyPayAutoConfigurationTest$CustomWebhookEventStoreConfig.class
+com\softgapx\appypay\spring\AppyPayAutoConfigurationTest$FakeWebhookEventStore.class
