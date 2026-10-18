@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.softgapx.appypay.spring","l":"AppyPayAutoConfiguration"},{"p":"com.softgapx.appypay.spring","l":"AppyPayProperties"}];updateSearchResults();
