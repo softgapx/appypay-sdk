@@ -4,7 +4,7 @@ Todas as alterações relevantes deste projeto são documentadas aqui.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e o versionamento segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
-## [1.0.0] - 2026-10-17
+## [1.0.0] - 2026-10-24
 
 ### Added
 - Primeira versão pública do SDK: criação e consulta de pagamentos
